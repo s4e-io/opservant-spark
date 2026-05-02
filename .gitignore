@@ -1,0 +1,41 @@
+# Binaries
+# Output
+output/
+backup/
+input/
+logs/
+
+*.exe
+*.test
+*.out
+/spark
+/spark.exe
+/spark-agent
+/spark-agent.exe
+/spark-agent-*
+
+# User-specific configuration
+config.yaml
+.env
+*.env
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Go
+vendor/
+go.work.sum
+.gocache/
+
+# Build artifacts
+build/
+dist/
+
+# Profiling
+*.prof
+*.pprof

@@ -1,0 +1,91 @@
+{
+  "slug": "open-listening-ports-linux",
+  "name": "Open Listening Ports (Linux)",
+  "description": "Enumerate listening TCP/UDP ports, map to PIDs, and flag unexpected services on Linux.",
+  "risk_score": 8,
+  "target_tags": [
+    "linux",
+    "network",
+    "visibility"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 120,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only enumeration of sockets and services."
+  ],
+  "tasks": [
+    {
+      "slug": "enumerate-listening-ports",
+      "name": "Enumerate listening ports",
+      "description": "Gather TCP/UDP listeners and highlight uncommon ports.",
+      "supported_os": [
+        "linux"
+      ],
+      "timeout_seconds": 120,
+      "actions": [
+        {
+          "slug": "tcp-listeners",
+          "name": "TCP listeners",
+          "description": "List TCP listening sockets with PID/process.",
+          "command": "ss -tlnp",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "udp-listeners",
+          "name": "UDP listeners",
+          "description": "List UDP listening sockets with PID/process.",
+          "command": "ss -ulnp",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "common-services",
+          "name": "Common services mapping",
+          "description": "Reference common service ports from /etc/services.",
+          "command": "cat /etc/services | grep -E '^(http|ssh|ftp|telnet|smtp)'",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "unique-ports",
+          "name": "Unique listening ports",
+          "description": "Extract and sort unique TCP listening ports.",
+          "command": "ss -tlnp | awk 'NR>1 {print $4}' | cut -d: -f2 | sort -un",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "unexpected-ports",
+          "name": "Unexpected ports (exclude 22/80/443)",
+          "description": "Highlight listeners not on common ports.",
+          "command": "ss -tlnp | grep -vE ':(22|80|443)\\s'",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

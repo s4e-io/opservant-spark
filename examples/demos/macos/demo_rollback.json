@@ -1,0 +1,43 @@
+{
+  "slug": "macos-rollback-demo",
+  "name": "macOS Rollback Demo",
+  "description": "Demonstrates automatic rollback functionality on failure.",
+  "risk_score": 2,
+  "risk_level": "low",
+  "timeout_seconds": 30,
+  "auto_revert_on_failure": true,
+  "tasks": [
+    {
+      "slug": "rollback-demo-task",
+      "name": "Rollback Demo Task",
+      "description": "Task representing an operation that will be rolled back.",
+      "timeout_seconds": 30,
+      "actions": [
+        {
+          "slug": "create-temp-file",
+          "name": "Create temporary file",
+          "description": "Action 1: Creates a temporary file in /tmp",
+          "command": "touch ./spark_rollback_demo.txt && echo 'File created in current directory. Waiting before failure...' && sleep 3",
+          "supported_os": [
+            "macos"
+          ],
+          "risk_level": "low",
+          "rollback_command": "echo 'Sleeping before rollback...' && sleep 3 && rm -f ./spark_rollback_demo.txt && echo 'Rollback complete.'",
+          "timeout_seconds": 10,
+          "rollback_timeout_seconds": 15
+        },
+        {
+          "slug": "failing-action",
+          "name": "Intentional Failure",
+          "description": "Action 2: Fails intentionally to trigger the rollback of Action 1",
+          "command": "echo 'Triggering failure now!' && false",
+          "supported_os": [
+            "macos"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 10
+        }
+      ]
+    }
+  ]
+}

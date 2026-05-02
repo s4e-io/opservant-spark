@@ -1,0 +1,103 @@
+{
+  "slug": "user-privilege-group-audit-linux",
+  "name": "User Privilege & Group Audit (Linux)",
+  "description": "Identify current user, groups, and privilege indicators on Linux.",
+  "risk_score": 6,
+  "target_tags": [
+    "linux",
+    "identity",
+    "audit"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 90,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only identity and group enumeration."
+  ],
+  "tasks": [
+    {
+      "slug": "user-privilege-audit",
+      "name": "User privilege audit",
+      "description": "Enumerate user identity, groups, and recent logins.",
+      "supported_os": [
+        "linux"
+      ],
+      "timeout_seconds": 90,
+      "actions": [
+        {
+          "slug": "whoami",
+          "name": "Whoami",
+          "description": "Current user",
+          "command": "whoami",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "id",
+          "name": "id",
+          "description": "User and group IDs",
+          "command": "id",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "groups",
+          "name": "groups",
+          "description": "Group memberships",
+          "command": "groups",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "recent-logins",
+          "name": "Recent logins",
+          "description": "Last 15 login entries from auth log for current user.",
+          "command": "grep \"session opened for user $USER\" /var/log/auth.log 2>/dev/null | tail -15 || echo \"auth.log not accessible\"",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "user-shells",
+          "name": "User shells",
+          "description": "List non-system users and shells.",
+          "command": "cat /etc/passwd | awk -F: '$3 >= 1000 {print $1, $3, $6, $7}'",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "groups-for-user",
+          "name": "Groups for current user",
+          "description": "Groups containing current user.",
+          "command": "cat /etc/group | grep $(whoami)",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

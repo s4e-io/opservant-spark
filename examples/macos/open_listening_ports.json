@@ -1,0 +1,91 @@
+{
+  "slug": "open-listening-ports-macos",
+  "name": "Open Listening Ports (macOS)",
+  "description": "Enumerate listening TCP/UDP ports, map to processes, and flag unexpected services on macOS.",
+  "risk_score": 8,
+  "target_tags": [
+    "macos",
+    "network",
+    "visibility"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 120,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only enumeration of sockets and services."
+  ],
+  "tasks": [
+    {
+      "slug": "enumerate-listening-ports",
+      "name": "Enumerate listening ports",
+      "description": "Gather TCP/UDP listeners and highlight uncommon ports.",
+      "supported_os": [
+        "darwin"
+      ],
+      "timeout_seconds": 120,
+      "actions": [
+        {
+          "slug": "netstat-listen",
+          "name": "Netstat listening sockets",
+          "description": "List listening sockets via netstat.",
+          "command": "netstat -an | grep LISTEN",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "netstat-ports",
+          "name": "Extract listening port numbers",
+          "description": "Extract and sort unique listening port numbers.",
+          "command": "netstat -an | grep LISTEN | awk '{print $4}' | cut -d. -f5 | sort -un",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "netstat-unexpected",
+          "name": "Unexpected ports (exclude 22/80/443)",
+          "description": "Highlight listeners not on common ports.",
+          "command": "netstat -an | grep LISTEN | grep -vE '\\.(22|80|443)\\s'",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "lsof-tcp-listen",
+          "name": "Lsof TCP listening",
+          "description": "List TCP listeners with process info.",
+          "command": "lsof -iTCP -sTCP:LISTEN -nP 2>/dev/null",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 20,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "lsof-udp",
+          "name": "Lsof UDP",
+          "description": "List UDP sockets with process info.",
+          "command": "lsof -iUDP -nP 2>/dev/null",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 20,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

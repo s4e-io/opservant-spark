@@ -1,0 +1,91 @@
+{
+  "slug": "open-listening-ports-windows",
+  "name": "Open Listening Ports (Windows)",
+  "description": "Enumerate listening TCP/UDP ports, map to PIDs/processes, and flag unexpected services on Windows.",
+  "risk_score": 8,
+  "target_tags": [
+    "windows",
+    "network",
+    "visibility"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 150,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only enumeration of sockets and services."
+  ],
+  "tasks": [
+    {
+      "slug": "enumerate-listening-ports",
+      "name": "Enumerate listening ports",
+      "description": "Gather TCP/UDP listeners and highlight uncommon ports.",
+      "supported_os": [
+        "windows"
+      ],
+      "timeout_seconds": 150,
+      "actions": [
+        {
+          "slug": "netstat-listening",
+          "name": "Netstat listening sockets",
+          "description": "List listening sockets via netstat.",
+          "command": "netstat -ano | findstr LISTENING",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 20,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "netstat-unexpected",
+          "name": "Unexpected ports (exclude 22/80/443)",
+          "description": "Highlight listeners not on common ports.",
+          "command": "netstat -ano | findstr LISTENING | findstr /V \":22 \" | findstr /V \":80 \" | findstr /V \":443 \" || echo No unexpected ports found",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 20,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "get-net-tcp",
+          "name": "Get-NetTCPConnection",
+          "description": "List TCP listeners with owning process.",
+          "command": "powershell -Command \"Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess\"",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 20,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "get-net-udp",
+          "name": "Get-NetUDPEndpoint",
+          "description": "List UDP listeners with owning process.",
+          "command": "powershell -Command \"Get-NetUDPEndpoint | Select-Object LocalAddress, LocalPort, OwningProcess\"",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 20,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "port-to-process",
+          "name": "Map port to process",
+          "description": "Map listening ports to process names.",
+          "command": "powershell -Command \"Get-NetTCPConnection -State Listen | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{Port=$_.LocalPort; PID=$_.OwningProcess; Process=$p.Name} }\"",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 25,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

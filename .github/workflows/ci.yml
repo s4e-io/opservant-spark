@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+  build:
+    name: Build (${{ matrix.goos }}/${{ matrix.goarch }})
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+          - goos: windows
+            goarch: arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          EXT=""
+          [ "$GOOS" = "windows" ] && EXT=".exe"
+          go build \
+            -ldflags="-s -w -X main.version=dev" \
+            -o dist/spark-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} \
+            ./cmd/opservant-spark

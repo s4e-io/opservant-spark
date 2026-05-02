@@ -1,0 +1,115 @@
+{
+  "slug": "user-privilege-group-audit-windows",
+  "name": "User Privilege & Group Audit (Windows)",
+  "description": "Identify current user, group memberships, and privilege indicators on Windows.",
+  "risk_score": 6,
+  "target_tags": [
+    "windows",
+    "identity",
+    "audit"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 150,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only identity and group enumeration."
+  ],
+  "tasks": [
+    {
+      "slug": "user-privilege-audit",
+      "name": "User privilege audit",
+      "description": "Enumerate user identity, groups, and privilege indicators.",
+      "supported_os": [
+        "windows"
+      ],
+      "timeout_seconds": 150,
+      "actions": [
+        {
+          "slug": "whoami",
+          "name": "whoami",
+          "description": "Current user.",
+          "command": "whoami",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "whoami-groups",
+          "name": "whoami /groups",
+          "description": "Group memberships.",
+          "command": "whoami /groups",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "whoami-priv",
+          "name": "whoami /priv",
+          "description": "Privilege set.",
+          "command": "whoami /priv",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "whoami-all",
+          "name": "whoami /all",
+          "description": "Full token info.",
+          "command": "whoami /all",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "net-user",
+          "name": "net user",
+          "description": "Local user details for current user.",
+          "command": "net user %USERNAME%",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "local-admin-group",
+          "name": "Local Administrators group members",
+          "description": "Enumerate local Administrators group membership.",
+          "command": "powershell -Command \"Get-LocalGroupMember -Group 'Administrators' -ErrorAction SilentlyContinue\"",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "local-users",
+          "name": "Local users summary",
+          "description": "List local users with enablement and password timestamps.",
+          "command": "powershell -Command \"Get-LocalUser | Select-Object Name, Enabled, LastLogon, PasswordLastSet\"",
+          "supported_os": [
+            "windows"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

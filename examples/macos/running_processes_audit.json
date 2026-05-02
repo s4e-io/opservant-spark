@@ -1,0 +1,67 @@
+{
+  "slug": "running-processes-audit-macos",
+  "name": "Running Processes Audit (macOS)",
+  "description": "List top CPU processes and unique commands; flag potential suspicious names.",
+  "risk_score": 6,
+  "target_tags": [
+    "macos",
+    "process",
+    "audit"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 120,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only process inspection."
+  ],
+  "tasks": [
+    {
+      "slug": "running-processes-audit",
+      "name": "Audit running processes",
+      "description": "Capture top CPU processes, unique commands, and simple name-based heuristics.",
+      "supported_os": [
+        "darwin"
+      ],
+      "timeout_seconds": 120,
+      "actions": [
+        {
+          "slug": "top-cpu",
+          "name": "Top CPU processes",
+          "description": "List top 20 processes by CPU usage.",
+          "command": "ps aux --sort=-%cpu | head -20",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "unique-procs",
+          "name": "Unique commands",
+          "description": "Show unique user/pid/command tuples.",
+          "command": "ps aux | awk '{print $1, $2, $11}' | sort -u",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "grep-suspicious-names",
+          "name": "Heuristic suspicious names",
+          "description": "Search for common suspicious keywords in process list.",
+          "command": "ps aux | grep -iE 'miner|keylog|rat|backdoor' 2>/dev/null",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "medium",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

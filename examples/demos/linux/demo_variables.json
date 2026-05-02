@@ -1,0 +1,33 @@
+{
+  "slug": "linux-variables-demo",
+  "name": "Linux Variables Demo",
+  "description": "Demonstrates using playbook variables in commands.",
+  "risk_score": 1,
+  "risk_level": "low",
+  "timeout_seconds": 30,
+  "variables": {
+    "MSG_PREFIX": "Hello from Opservant Spark:",
+    "TARGET_USER": "Demo User"
+  },
+  "tasks": [
+    {
+      "slug": "variables-demo-task",
+      "name": "Variables Demo Task",
+      "description": "Uses variables to print a message.",
+      "timeout_seconds": 30,
+      "actions": [
+        {
+          "slug": "print-variables",
+          "name": "Print Variables",
+          "description": "Prints the variables defined in the playbook.",
+          "command": "echo '{{MSG_PREFIX}} {{TARGET_USER}}'",
+          "supported_os": [
+            "linux"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 10
+        }
+      ]
+    }
+  ]
+}

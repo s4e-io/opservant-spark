@@ -1,0 +1,31 @@
+{
+  "slug": "macos-human-approval",
+  "name": "macOS Human Approval Demo",
+  "description": "Demonstrates the human-in-the-loop approval process in Opservant Spark.",
+  "risk_score": 2,
+  "risk_level": "low",
+  "timeout_seconds": 60,
+  "human_in_the_loop": true,
+  "tasks": [
+    {
+      "slug": "approval-demo-task",
+      "name": "Approval Demo Task",
+      "description": "Task containing an action that requires approval.",
+      "timeout_seconds": 30,
+      "actions": [
+        {
+          "slug": "approvable-action",
+          "name": "Approval Required Action",
+          "description": "This action requires manual intervention before execution.",
+          "command": "echo 'This action was approved by a human.'",
+          "supported_os": [
+            "macos"
+          ],
+          "risk_level": "low",
+          "approval_required": true,
+          "timeout_seconds": 10
+        }
+      ]
+    }
+  ]
+}

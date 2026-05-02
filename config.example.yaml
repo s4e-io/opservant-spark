@@ -1,0 +1,8 @@
+agent:
+  name: "my-spark"
+  uuid: "550e8400-e29b-41d4-a716-446655440000"
+
+logging:
+  level: "info"
+  log_to_file: false
+  log_dir: "./logs"

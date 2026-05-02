@@ -1,0 +1,53 @@
+{
+  "slug": "linux-dependencies-demo",
+  "name": "Linux Dependencies Fail Demo",
+  "description": "Demonstrates action dependencies skipping in Opservant Spark by failing intentionally.",
+  "risk_score": 2,
+  "risk_level": "low",
+  "timeout_seconds": 30,
+  "tasks": [
+    {
+      "slug": "dependencies-demo-task",
+      "name": "Dependencies Failing Task",
+      "timeout_seconds": 30,
+      "actions": [
+        {
+          "slug": "action-1-setup",
+          "name": "Independent Action (Always Executes but Fails)",
+          "description": "Intentionally fails after setup to demonstrate dependency skipping; downstream dependent actions should be skipped.",
+          "command": "echo 'Setting up environment for subsequent actions' | exit 1",
+          "supported_os": [
+            "linux"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 5
+        },
+        {
+          "slug": "action-2-dependent",
+          "name": "Dependent Action (Will be skipped)",
+          "description": "Runs only if action-1-setup succeeds; in this demo it will be skipped because the dependency fails.",
+          "depends_on": [
+            "action-1-setup"
+          ],
+          "command": "echo 'This action runs only because its dependency succeeded.'",
+          "supported_os": [
+            "linux"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 5
+        },
+        {
+          "slug": "action-3-independent",
+          "name": "Independent Action (Always Executes)",
+          "description": "Independent of other actions; executes even if prior actions fail in different dependency chains.",
+          "command": "echo 'I have no dependencies, so I execute anyway!'",
+          "supported_os": [
+            "linux"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 5
+        }
+      ]
+    }
+  ]
+}

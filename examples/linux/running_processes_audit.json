@@ -1,0 +1,67 @@
+{
+  "slug": "running-processes-audit-linux",
+  "name": "Running Processes Audit (Linux)",
+  "description": "List top CPU/memory processes and unique commands to spot suspicious activity.",
+  "risk_score": 6,
+  "target_tags": [
+    "linux",
+    "process",
+    "audit"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 120,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only process inspection."
+  ],
+  "tasks": [
+    {
+      "slug": "running-processes-audit",
+      "name": "Audit running processes",
+      "description": "Capture top CPU/mem processes and unique commands.",
+      "supported_os": [
+        "linux"
+      ],
+      "timeout_seconds": 120,
+      "actions": [
+        {
+          "slug": "top-cpu",
+          "name": "Top CPU processes",
+          "description": "List top 20 processes by CPU usage.",
+          "command": "ps aux --sort=-%cpu | head -20",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "top-mem",
+          "name": "Top memory processes",
+          "description": "List top 20 processes by memory usage.",
+          "command": "ps aux --sort=-%mem | head -20",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "unique-procs",
+          "name": "Unique commands",
+          "description": "Show unique user/pid/command tuples (excluding grep/ps).",
+          "command": "ps aux | grep -vE 'grep|ps aux' | awk '{print $1, $2, $11}' | sort -u",
+          "supported_os": [
+            "linux"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

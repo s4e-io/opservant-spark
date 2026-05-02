@@ -1,0 +1,42 @@
+{
+  "slug": "linux-working-dir-demo",
+  "name": "Linux Working Directory Demo",
+  "description": "Demonstrates working directory support in Opservant Spark.",
+  "risk_score": 1,
+  "risk_level": "low",
+  "timeout_seconds": 30,
+  "tasks": [
+    {
+      "slug": "working-dir-demo-task",
+      "name": "Working Directory Demo Task",
+      "description": "Runs commands from a specific working directory.",
+      "timeout_seconds": 30,
+      "actions": [
+        {
+          "slug": "print-working-dir",
+          "name": "Print Working Directory",
+          "description": "Prints the current working directory to confirm execution context.",
+          "command": "pwd && echo 'Running from working directory above.'",
+          "working_dir": "/tmp",
+          "supported_os": [
+            "linux"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 5
+        },
+        {
+          "slug": "list-working-dir",
+          "name": "List Working Directory Contents",
+          "description": "Lists files in the working directory.",
+          "command": "ls -la",
+          "working_dir": "/tmp",
+          "supported_os": [
+            "linux"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 5
+        }
+      ]
+    }
+  ]
+}

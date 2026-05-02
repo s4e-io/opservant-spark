@@ -1,0 +1,103 @@
+{
+  "slug": "user-privilege-group-audit-macos",
+  "name": "User Privilege & Group Audit (macOS)",
+  "description": "Identify current user, group memberships, and privilege indicators on macOS.",
+  "risk_score": 6,
+  "target_tags": [
+    "macos",
+    "identity",
+    "audit"
+  ],
+  "risk_level": "low",
+  "timeout_seconds": 90,
+  "human_in_the_loop": false,
+  "auto_revert_on_failure": false,
+  "notes": [
+    "Read-only identity and group enumeration."
+  ],
+  "tasks": [
+    {
+      "slug": "user-privilege-audit",
+      "name": "User privilege audit",
+      "description": "Enumerate user identity, groups, and recent logins.",
+      "supported_os": [
+        "darwin"
+      ],
+      "timeout_seconds": 90,
+      "actions": [
+        {
+          "slug": "whoami",
+          "name": "Whoami",
+          "description": "Current user.",
+          "command": "whoami",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "id",
+          "name": "id",
+          "description": "User and group IDs.",
+          "command": "id",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "groups",
+          "name": "groups",
+          "description": "Group memberships.",
+          "command": "groups",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 5,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "recent-logins",
+          "name": "Recent logins",
+          "description": "Last 15 login entries for current user.",
+          "command": "last -n 15 $USER",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 15,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "dscl-user-record",
+          "name": "dscl user record",
+          "description": "Group membership and IDs via dscl.",
+          "command": "dscl . -read /Users/$(whoami) | grep -E 'GroupMembership|PrimaryGroupID|UniqueID'",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        },
+        {
+          "slug": "list-users",
+          "name": "List local users",
+          "description": "List local users excluding system prefixed with _.",
+          "command": "dscl . -list /Users | grep -v '^_'",
+          "supported_os": [
+            "darwin"
+          ],
+          "timeout_seconds": 10,
+          "risk_level": "low",
+          "requires_admin": false
+        }
+      ]
+    }
+  ]
+}

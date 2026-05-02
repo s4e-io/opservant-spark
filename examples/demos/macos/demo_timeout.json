@@ -1,0 +1,29 @@
+{
+  "slug": "macos-timeout-demo",
+  "name": "macOS Timeout Demo",
+  "description": "Demonstrates command timeout handling in Opservant Spark.",
+  "risk_score": 2,
+  "risk_level": "low",
+  "timeout_seconds": 10,
+  "tasks": [
+    {
+      "slug": "timeout-demo-task",
+      "name": "Timeout Demo Task",
+      "description": "Task containing an action that will intentionally timeout.",
+      "timeout_seconds": 10,
+      "actions": [
+        {
+          "slug": "sleep-action-timeout",
+          "name": "Sleep Command (should timeout)",
+          "description": "This action sleeps for 10 seconds but has a timeout of 2 seconds.",
+          "command": "sleep 10",
+          "supported_os": [
+            "macos"
+          ],
+          "risk_level": "low",
+          "timeout_seconds": 2
+        }
+      ]
+    }
+  ]
+}
