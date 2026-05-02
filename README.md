@@ -13,7 +13,8 @@
 
 <p align="center">
   <b>The safe execution layer for AI-driven security operations.</b><br>
-  A single binary. No runtime dependencies. Linux, macOS, and Windows.
+  Don't hold AI back. Make it safe to let it act.<br>
+  <sub>A single binary. No runtime dependencies. Linux, macOS, and Windows.</sub>
 </p>
 
 <p align="center">
@@ -30,11 +31,11 @@
 
 ## Why Spark?
 
-AI is transforming cybersecurity. Models can now detect vulnerabilities, analyze misconfigurations, and decide on remediation strategies faster than any human team. But there's a critical gap: **executing those decisions on live infrastructure is dangerous.**
+AI is transforming cybersecurity. Models can now detect vulnerabilities, analyze misconfigurations, and decide on remediation strategies faster than any human team. The question is no longer *"will AI be used?"* — it's *"how do we let AI act safely?"*
 
 An AI that decides "disable root SSH login" is useful. An AI that *runs* `sed -i` on your production `sshd_config` without guardrails is a liability. One wrong command, one missing rollback, one unchecked privilege escalation — and you have an outage instead of a fix.
 
-**Spark was designed by [s4e.io](https://s4e.io) engineers to solve exactly this problem.** It is the execution layer that sits between AI decision-making and real-world infrastructure — ensuring every action is validated, scoped, reversible, and auditable before it touches a single machine.
+**Spark was designed by [s4e.io](https://s4e.io) engineers to solve exactly this problem.** It doesn't slow AI down — it makes AI safe enough to move fast. Spark is the execution layer that sits between AI decision-making and real-world infrastructure — ensuring every action is validated, scoped, reversible, and auditable before it touches a single machine.
 
 ### The Problem
 
@@ -58,7 +59,7 @@ Spark enables a world where AI can take **bold, continuous security action** —
 - **Auditable** — every execution logged with timestamps, outputs, and status
 - **Approvable** — critical actions require explicit human confirmation
 
-This is not just a playbook runner. It is a **trust layer for autonomous security operations**.
+This is not just a playbook runner. It is a **trust layer for autonomous security operations** — designed to unleash AI, not restrain it.
 
 ## What is Spark?
 
