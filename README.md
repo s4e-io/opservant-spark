@@ -12,11 +12,12 @@
 </p>
 
 <p align="center">
-  <b>Open source security agent that runs infrastructure playbooks anywhere.</b><br>
+  <b>The safe execution layer for AI-driven security operations.</b><br>
   A single binary. No runtime dependencies. Linux, macOS, and Windows.
 </p>
 
 <p align="center">
+  <a href="#why-spark">Why Spark</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#how-it-works">How It Works</a> •
   <a href="#cacao-aligned-execution">CACAO Framework</a> •
@@ -27,20 +28,56 @@
 
 ---
 
+## Why Spark?
+
+AI is transforming cybersecurity. Models can now detect vulnerabilities, analyze misconfigurations, and decide on remediation strategies faster than any human team. But there's a critical gap: **executing those decisions on live infrastructure is dangerous.**
+
+An AI that decides "disable root SSH login" is useful. An AI that *runs* `sed -i` on your production `sshd_config` without guardrails is a liability. One wrong command, one missing rollback, one unchecked privilege escalation — and you have an outage instead of a fix.
+
+**Spark was designed by [s4e.io](https://s4e.io) engineers to solve exactly this problem.** It is the execution layer that sits between AI decision-making and real-world infrastructure — ensuring every action is validated, scoped, reversible, and auditable before it touches a single machine.
+
+### The Problem
+
+| Without Spark | With Spark |
+|--------------|------------|
+| AI runs raw shell commands directly | AI selects structured, peer-reviewed playbooks |
+| No rollback if something breaks | Automatic rollback on failure (`auto_revert_on_failure`) |
+| Blind privilege escalation | Explicit admin checks per action (`requires_admin`) |
+| No human oversight for critical changes | Approval gates pause for confirmation (`approval_required`) |
+| Commands run forever or silently hang | Enforced timeouts at action, task, and playbook level |
+| Injection risk from dynamic variables | Shell injection blocked on both Unix and Windows |
+| No audit trail | Structured logging with full stdout/stderr capture |
+
+### The Vision
+
+Spark enables a world where AI can take **bold, continuous security action** — hardening servers, closing vulnerabilities, enforcing compliance — while humans retain **full control and visibility** over what happens on their infrastructure. Every action is:
+
+- **Structured** — defined in a JSON playbook, not an arbitrary shell string
+- **Scoped** — tagged with OS, risk level, and target context
+- **Reversible** — rollback commands built into every destructive action
+- **Auditable** — every execution logged with timestamps, outputs, and status
+- **Approvable** — critical actions require explicit human confirmation
+
+This is not just a playbook runner. It is a **trust layer for autonomous security operations**.
+
 ## What is Spark?
 
-Spark is a lightweight CLI agent that loads JSON security playbooks from disk and executes them on the target machine. It handles platform detection, privilege checks, human approval gates, variable injection protection, timeouts, and automatic rollback — so playbook authors can focus on *what* to do, not *how* to do it safely.
+Spark is an open source CLI agent that loads JSON security playbooks from disk and executes them on the target machine through a [CACAO-aligned](#cacao-aligned-execution) safety pipeline. It handles platform detection, privilege checks, human approval gates, variable injection protection, timeouts, and automatic rollback — so AI systems and playbook authors can focus on *what* to do, not *how* to do it safely.
 
 ```
- ┌─────────────┐      ┌─────────────┐      ┌──────────────┐
- │  Playbook    │ ───▶ │  Processor  │ ───▶ │   Executor   │
- │  (JSON)      │      │  Pipeline   │      │  (CACAO)   │
- └─────────────┘      └─────────────┘      └──────────────┘
-                       Ingest → Parse       Per-action safety
-                       Validate → Enrich    checks & execution
+                          Spark Architecture
+
+ ┌──────────┐      ┌─────────────┐      ┌───────────────────┐
+ │ AI / Ops  │ ──▶ │  Processor  │ ──▶  │  CACAO Executor   │
+ │ Decision  │      │  Pipeline   │      │  (7 safety gates) │
+ └──────────┘      └─────────────┘      └───────────────────┘
+  Selects a         Ingest → Parse       Platform → Approval
+  playbook          Validate → Enrich    Privilege → Assembly
+                                         Timeout → Capture
+                                         Rollback
 ```
 
-Use it standalone or pair it with [**opservant-playbooks**](https://github.com/s4e-io/opservant-playbooks) — a community-maintained library of 100+ ready-to-use security playbooks.
+Use it standalone or pair it with [**opservant-playbooks**](https://github.com/s4e-io/opservant-playbooks) — a community-maintained library of 100+ ready-to-use security playbooks covering hardening, information gathering, configuration, maintenance, and reboot across Linux, macOS, and Windows.
 
 ## Quick Start
 
